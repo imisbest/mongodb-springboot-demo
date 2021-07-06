@@ -1,0 +1,5 @@
+"_id"	"_class"	"name"
+"60e10159d31e261ae8dddc4f"	"com.csw.mongodbspringbootdemo.entity.Clazz"	"小明课堂"
+"60e10203d31e2641ecb748ee"	"com.csw.mongodbspringbootdemo.entity.Clazz"	"天天课堂"
+"60e2dc16e81ac07643e9f97f"	"com.csw.mongodbspringbootdemo.entity.Clazz"	"天天课堂2"
+"60e2dcfa001de73fb685c784"	"com.csw.mongodbspringbootdemo.entity.Clazz"	"天天课堂3"

@@ -1,0 +1,2 @@
+"_id"	"_class"    "lastCode"  "name"	"unitCode"
+"60e378615012a12039715e09"	"com.csw.mongodbspringbootdemo.entity.Chair"	"aa"	"1号椅子"	"112e59de-4066-4ec5-a6db-7e5893191b27"

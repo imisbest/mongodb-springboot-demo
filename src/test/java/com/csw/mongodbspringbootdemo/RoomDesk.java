@@ -1,5 +1,6 @@
 package com.csw.mongodbspringbootdemo;
 
+import com.csw.mongodbspringbootdemo.entity.Chair;
 import com.csw.mongodbspringbootdemo.entity.Desk;
 import com.csw.mongodbspringbootdemo.entity.Room;
 import com.mongodb.BasicDBObject;
@@ -58,12 +59,11 @@ public class RoomDesk {
         Query query2 = new Query(Criteria.where("name").is(deskName));
         Desk desk2 = mongoTemplate.findOne(query2, Desk.class);
         System.out.println(desk2);
-        System.out.println(room.getId().equals(desk2.getRoomId()));
-        System.out.println(room.getUnitCode().equals(desk2.getUnitCode()));
+
     }
 
     @Test
-    public void groupBy() {
+    public void groupBy() {//group
         List<AggregationOperation> aggs = new ArrayList<>();
         //aggs.add(Aggregation.match(Criteria.where("name").is("log")));
         aggs.add(Aggregation.group("name").count().as("count"));
@@ -74,17 +74,20 @@ public class RoomDesk {
         Aggregation agg = Aggregation.newAggregation(aggs);
 
         AggregationResults<Map> results = mongoTemplate.aggregate(agg,Desk.class, Map.class);
+        for (Map result : results) {
+            System.out.println(result);
+        }
     }
 
     @Test
-    public void findMoreTable() {//多表联查
+    public void findMoreTable() {//两表联查
 
         LookupOperation lookupOperation = LookupOperation.newLookup().
                 from("room"). //关联表名
                 localField("unitCode"). //主关联字段
                 foreignField("unitCode").//从表关联字段对应的次表字段
-                as("ClazzStudents");//查询结果集合名
-        Criteria ordercri = Criteria.where("ClazzStudents").not().size(0);//只查询有宠物的人
+                as("rooms");//查询结果集合名
+        Criteria ordercri = Criteria.where("rooms").not().size(0);//只查询有宠物的人
         // ordercri.and("age").gte(1).lte(5);//只查询1岁到5岁的宠物
         AggregationOperation matchZi = Aggregation.match(ordercri);
         Aggregation aggregation = Aggregation.newAggregation(lookupOperation,matchZi);//排序
@@ -94,15 +97,15 @@ public class RoomDesk {
         }
     }
     @Test
-    public void findMoreTable2() {//多表联查
+    public void findMoreTable2() {//两表联查
 
         LookupOperation lookupOperation = LookupOperation.newLookup().
                 from("desk"). //关联表名
                 localField("unitCode"). //主关联字段
                 foreignField("unitCode").//从表关联字段对应的次表字段
-                as("ClazzStudents");//查询结果集合名
+                as("desks");//查询结果集合名
 
-        Criteria ordercri = Criteria.where("ClazzStudents").not().size(0);//只查询有宠物的人
+        Criteria ordercri = Criteria.where("desks").not().size(0);//只查询有宠物的人
         // ordercri.and("age").gte(1).lte(5);//只查询1岁到5岁的宠物
         AggregationOperation matchZi = Aggregation.match(ordercri);
         Aggregation aggregation = Aggregation.newAggregation(lookupOperation,matchZi);//排序
@@ -111,8 +114,10 @@ public class RoomDesk {
             System.out.println(result);
         }
     }
+
+
     @Test
-    public void findMoreTableZongHe() {//
+    public void findMoreTableZongHe() {//两表联查
 
         int pageNumber = 2;//0,1相同
         int pageSize = 2;
@@ -132,7 +137,7 @@ public class RoomDesk {
         AggregationOperation matchFu = Aggregation.match(qqq);
         //分页查询
         Aggregation aggregation = Aggregation.newAggregation(matchFu, lookupOperation, matchZi,
-                Aggregation.sort(Sort.Direction.ASC,"name")
+                Aggregation.sort(Sort.Direction.DESC,"name")
         , Aggregation.skip(pageSize>1?(pageNumber-1)*pageSize:0)
         ,Aggregation.limit(pageSize));//排序 Aggregation.skip(pageable.getPageNumber()>1?(pageable.getPageNumber()-1)*pageable.getPageSize():0),//pagenumber
         //分页
@@ -167,4 +172,74 @@ public class RoomDesk {
         return pageResult;
     }
 */
+    @Test
+    public void saveChair() {//添加椅子
+        String roomName = "光明房间";
+        String chairName = "1号椅子";
+        Query query = new Query(Criteria.where("name").is(roomName));
+        Room room = mongoTemplate.findOne(query, Room.class);
+        Chair chair = new Chair();
+        chair.setName(chairName);
+        assert room != null;
+        chair.setUnitCode(room.getUnitCode());
+        mongoTemplate.save(chair);
+
+    }
+    @Test
+    public void findMoreTable3_0() {//三表联查(相同关联字段)
+
+        LookupOperation lookupOperation = LookupOperation.newLookup().
+                from("desk"). //关联表名
+                localField("unitCode"). //主关联字段
+                foreignField("unitCode").//从表关联字段对应的次表字段
+                as("desks");//查询结果集合名
+
+        Criteria ordercri = Criteria.where("desks").not().size(0);//只查询有宠物的人
+        // ordercri.and("age").gte(1).lte(5);//只查询1岁到5岁的宠物
+        AggregationOperation matchZi = Aggregation.match(ordercri);
+        LookupOperation lookupOperation2 = LookupOperation.newLookup().
+                from("chair"). //关联表名
+                localField("unitCode"). //主关联字段
+                foreignField("unitCode").//从表关联字段对应的次表字段
+                as("chairs");//查询结果集合名
+
+        Criteria ordercri2 = Criteria.where("chairs").not().size(0);//只查询有宠物的人
+        // ordercri.and("age").gte(1).lte(5);//只查询1岁到5岁的宠物
+        AggregationOperation matchZi2 = Aggregation.match(ordercri2);
+        Aggregation aggregation = Aggregation.newAggregation(lookupOperation,matchZi,lookupOperation2,matchZi2);//排序
+        List<Map> results = mongoTemplate.aggregate(aggregation, "room", Map.class).getMappedResults(); //查询出的结果集为BasicDBObject类型
+        for (Map result : results) {
+            System.out.println(result);
+        }
+    }
+
+    //数据模拟
+    @Test
+    public void findMoreTable3_1() {//三表联查(不同关联字段)经过测试，多表联查只能使用同一个关联字段，from相当于只能left join最外层的那个表
+
+        LookupOperation lookupOperation = LookupOperation.newLookup().
+                from("desk"). //关联表名
+                localField("unitCode"). //主关联字段
+                foreignField("unitCode").//从表关联字段对应的次表字段
+                as("desks");//查询结果集合名
+
+        Criteria ordercri = Criteria.where("desks").not().size(0);//只查询有宠物的人
+        // ordercri.and("age").gte(1).lte(5);//只查询1岁到5岁的宠物
+        AggregationOperation matchZi = Aggregation.match(ordercri);
+        LookupOperation lookupOperation2 = LookupOperation.newLookup().
+                from("chair"). //关联表名
+                localField("lastCode"). //主关联字段
+                foreignField("lastCode").//从表关联字段对应的次表字段
+                as("chairs");//查询结果集合名
+
+        Criteria ordercri2 = Criteria.where("chairs").not().size(0);//只查询有宠物的人
+        // ordercri.and("age").gte(1).lte(5);//只查询1岁到5岁的宠物
+        AggregationOperation matchZi2 = Aggregation.match(ordercri2);
+        Aggregation aggregation = Aggregation.newAggregation(lookupOperation,matchZi,lookupOperation2,matchZi2);//排序
+        List<Map> results = mongoTemplate.aggregate(aggregation, "room", Map.class).getMappedResults(); //查询出的结果集为BasicDBObject类型
+        for (Map result : results) {
+            System.out.println(result);
+        }
+    }
+
 }

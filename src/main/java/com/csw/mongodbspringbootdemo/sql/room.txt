@@ -1,0 +1,5 @@
+"_id"	"_class"	"lastCode"	"name"	"unitCode"
+"60e192ffdd81dc5a39be6b84"	"com.csw.mongodbspringbootdemo.entity.Room"		"黑暗房间"	"42576455-6ea0-4473-a4bb-d0f0d52d2453"
+"60e192ffdd81dc5a39be6b85"	"com.csw.mongodbspringbootdemo.entity.Room"	"aa"	"光明房间"	"112e59de-4066-4ec5-a6db-7e5893191b27"
+"60e1984c0761e04db976351c"	"com.csw.mongodbspringbootdemo.entity.Room"		"空房间2"	"5ab68753-3ea6-4e5d-8d66-046cf8ef1a99"
+"60e1984c0761e04db976351d"	"com.csw.mongodbspringbootdemo.entity.Room"		"空房间1"	"29eecebe-c261-4a74-9f2d-5f197831d3d2"

@@ -42,13 +42,9 @@ public class RoomDeskFanli {
         Desk desk = new Desk();
         desk.setName(deskName);
         assert room != null;
-        desk.setRoomId(room.getId());
+        desk.setUnitCode(room.getUnitCode());
         mongoTemplate.save(desk);
-        System.out.println(room);
-        Query query2 = new Query(Criteria.where("name").is(deskName));
-        Desk desk2 = mongoTemplate.findOne(query2, Desk.class);
-        System.out.println(desk2);
-        System.out.println(room.getId().equals(desk2.getRoomId()));
+
     }
     @Test
     public void findMoreTable() {//多表联查

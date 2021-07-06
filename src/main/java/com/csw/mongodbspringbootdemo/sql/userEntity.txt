@@ -1,0 +1,2 @@
+"_id"	"_class"	"passWord"	"userName"
+"2"	"com.lm.entity.UserEntity"	"xiaoming1"	"小明"

@@ -9,9 +9,9 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Data
-public class Room {
+public class Chair {
     private String id;
     private String unitCode;
     private String name;
-    private String lastCode;
+    private String lastCode;//模拟标签
 }

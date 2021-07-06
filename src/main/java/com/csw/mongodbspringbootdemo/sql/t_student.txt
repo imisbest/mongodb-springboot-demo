@@ -1,0 +1,4 @@
+"_id"	"_class"	"age"	"clazz_id"	"name"
+"60e11d82d31e2632b07cd0bb"	"com.csw.mongodbspringbootdemo.entity.Student"	"16"	"60e10203d31e2641ecb748ee"	"小明"
+"60e11fecd31e263ca81e756e"	"com.csw.mongodbspringbootdemo.entity.Student"	"18"	"60e10203d31e2641ecb748ee"	"小红"
+"60e2dd62e8a6123954fb5925"	"com.csw.mongodbspringbootdemo.entity.Student"	"18"	"60e10203d31e2641ecb748ee"	"小红2"

@@ -35,8 +35,8 @@ public class ClazzStudentTest {
     @Test
     public void saveClazz() {//添加课堂
         Clazz clazz = new Clazz();
-        clazz.setClazzName("天天课堂2");
-        clazzRepository.save(clazz);
+        clazz.setClazzName("天天课堂3");
+        mongoTemplate.insert(clazz);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ClazzStudentTest {
         Query query = new Query(Criteria.where("clazzName").is(clazzName));
         Clazz clazz = mongoTemplate.findOne(query, Clazz.class);
         Student student = new Student();
-        student.setStudentName("小红");
+        student.setStudentName("小红2");
         student.setAge(18);
         student.setClazzId(clazz.getId());
         mongoTemplate.save(student);
@@ -54,7 +54,7 @@ public class ClazzStudentTest {
 
     @Test
     public void findOneClazz() {
-        Query query = new Query(Criteria.where("id").is("60e10203d31e2641ecb748ee"));
+        Query query = new Query(Criteria.where("_id").is("60e10203d31e2641ecb748ee"));
         Clazz clazz = mongoTemplate.findOne(query, Clazz.class);
         //clazz】】】" + clazz);
     }
@@ -75,13 +75,32 @@ public class ClazzStudentTest {
         List<Student> students = mongoTemplate.find(query, Student.class);
         //students);
     }
+
+
+    @Test
+    public void findByManyStudent3() {//多条件3
+        Query query = new Query(Criteria.where("studentName").is("小红").and("age").is(18));
+        List<Student> students = mongoTemplate.find(query, Student.class);
+        //students);
+    }
+
+    @Test
+    public void findByManyStudent2() {//多条件2
+        Student student = new Student();
+        student.setStudentName("小红");
+        student.setAge(18);
+        Query query = new Query(Criteria.byExample(student));
+        List<Student> students = mongoTemplate.find(query, Student.class);
+        //students);
+    }
+
     @Test
     public void findByManyStudentOr() {//多条件0  or
         Query query = new Query(Criteria.where("studentName").regex("小"));
         query.addCriteria(
                 new Criteria().orOperator(
                         Criteria.where("age").is(18),
-                new Criteria().andOperator(Criteria.where("studentName").is("小明"),Criteria.where("age").is(16))
+                        new Criteria().andOperator(Criteria.where("studentName").is("小明"),Criteria.where("age").is(16))
                 ));
         List<Student> students = mongoTemplate.find(query, Student.class);
         //students);
@@ -109,24 +128,6 @@ public class ClazzStudentTest {
    版权声明：本文为CSDN博主「天武我非」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
    原文链接：https://blog.csdn.net/tjbsl/article/details/80620303*/
     @Test
-    public void findByManyStudent3() {//多条件3
-        Query query = new Query(Criteria.where("studentName").is("小红").and("age").is(18));
-        List<Student> students = mongoTemplate.find(query, Student.class);
-        //students);
-    }
-
-    @Test
-    public void findByManyStudent2() {//多条件2
-        Student student = new Student();
-        student.setStudentName("小红");
-        student.setAge(18);
-        Query query = new Query(Criteria.byExample(student));
-        List<Student> students = mongoTemplate.find(query, Student.class);
-        //students);
-    }
-
-
-    @Test
     public void searchClazzByIn() {//in操作
         List<String> str = new ArrayList<>();
         str.add("天天课堂");
@@ -136,19 +137,13 @@ public class ClazzStudentTest {
 
     }
 
-    @Test
-    public void findListClazz() {//list集合查询
-        Query query = new Query();
-        List<Clazz> clazzes = mongoTemplate.find(query, Clazz.class);
-        //clazzs】】】" + clazzes);
-        query.with(Sort.by(Sort.Direction.DESC, "age"));
 
-    }
+
 
     @Test
     public void findListStudentSort() {//排序
         Query query = new Query();
-        query.with(Sort.by(Sort.Direction.ASC, "age"));
+        query.with(Sort.by(Sort.Direction.DESC, "age"));
         List<Student> students = mongoTemplate.find(query, Student.class);
         //students】】】" + students);
 
@@ -224,7 +219,6 @@ public class ClazzStudentTest {
                 localField("id"). //主关联字段
                 foreignField("clazzId").//从表关联字段对应的次表字段
                 as("StudentClazz");//查询结果集合名
-
         Aggregation aggregation = Aggregation.newAggregation(lookupOperation);//排序
         List<Map> results = mongoTemplate.aggregate(aggregation, "t_clazz", Map.class).getMappedResults(); //查询出的结果集为BasicDBObject类型
         for (Map result : results) {

@@ -13,5 +13,4 @@ public class Desk {
     private String id;
     private String unitCode;
     private String name;
-    private String roomId;
 }
