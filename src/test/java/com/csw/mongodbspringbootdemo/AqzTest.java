@@ -10,7 +10,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -206,5 +209,13 @@ public class AqzTest {
         Long endtTime = System.currentTimeMillis();
         Long resultTime = endtTime - startTime;
         System.out.println("[总共执行耗时]" + resultTime);
+    }
+
+    @Test
+    public void UUid() {
+        System.out.println(UUID.randomUUID().toString().replace("-",""));
+        System.out.println(UUID.randomUUID().toString());
+        //82243279-664d-4652-b982-0b530ae44e1e
+        //a0e070dba9fe
     }
 }

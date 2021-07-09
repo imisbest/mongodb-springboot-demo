@@ -201,7 +201,7 @@ public class ClazzStudentTest {
 
         LookupOperation lookupOperation = LookupOperation.newLookup().
                 from("t_clazz"). //关联表名
-                localField("id"). //主关联字段
+                localField("_id"). //主关联字段
                 foreignField("clazzId").//从表关联字段对应的次表字段
                 as("StudentClazzs");//查询结果集合名
 
