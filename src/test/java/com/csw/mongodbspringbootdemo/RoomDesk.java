@@ -186,7 +186,7 @@ public class RoomDesk {
 
     }
     @Test
-    public void findMoreTable3_0() {//三表联查(相同关联字段)
+    public void findMoreTable3_0() {//三表联查测试，第一个表关联第二个人表（关联字段1），第一个表关联第三个表（关联字段1）
 
         LookupOperation lookupOperation = LookupOperation.newLookup().
                 from("desk"). //关联表名
@@ -215,7 +215,7 @@ public class RoomDesk {
 
     //数据模拟
     @Test
-    public void findMoreTable3_1() {//三表联查(不同关联字段)经过测试，多表联查只能使用同一个关联字段，from相当于只能left join最外层的那个表
+    public void findMoreTable3_1() {//三表联查测试，第一个表关联第二个人表（关联字段1），第一个表关联第三个表（关联字段2）
 
         LookupOperation lookupOperation = LookupOperation.newLookup().
                 from("desk"). //关联表名
@@ -237,6 +237,34 @@ public class RoomDesk {
         AggregationOperation matchZi2 = Aggregation.match(ordercri2);
         Aggregation aggregation = Aggregation.newAggregation(lookupOperation,matchZi,lookupOperation2,matchZi2);//排序
         List<Map> results = mongoTemplate.aggregate(aggregation, "room", Map.class).getMappedResults(); //查询出的结果集为BasicDBObject类型
+        for (Map result : results) {
+            System.out.println(result);
+        }
+    }
+
+    //数据模拟
+    @Test
+    public void findMoreTable3_3() {//三表联查测试，第一个表关联第二个人表（关联字段1），第二个表关联第三个表（关联字段2）
+        LookupOperation lookupOperation = LookupOperation.newLookup().
+                from("room"). //关联表名
+                localField("unitCode"). //主关联字段
+                foreignField("unitCode").//从表关联字段对应的次表字段
+                as("rooms");//查询结果集合名
+
+        Criteria ordercri = Criteria.where("rooms").not().size(0);//只查询有宠物的人
+        // ordercri.and("age").gte(1).lte(5);//只查询1岁到5岁的宠物
+        AggregationOperation matchZi = Aggregation.match(ordercri);
+        LookupOperation lookupOperation2 = LookupOperation.newLookup().
+                from("chair"). //关联表名
+                localField("rooms.lastCode"). //主关联字段
+                foreignField("lastCode").//从表关联字段对应的次表字段
+                as("chairs");//查询结果集合名
+
+        Criteria ordercri2 = Criteria.where("chairs").not().size(0);//只查询有宠物的人
+        // ordercri.and("age").gte(1).lte(5);//只查询1岁到5岁的宠物
+        AggregationOperation matchZi2 = Aggregation.match(ordercri2);
+        Aggregation aggregation = Aggregation.newAggregation(lookupOperation,matchZi,lookupOperation2,matchZi2);//排序
+        List<Map> results = mongoTemplate.aggregate(aggregation, "desk", Map.class).getMappedResults(); //查询出的结果集为BasicDBObject类型
         for (Map result : results) {
             System.out.println(result);
         }
